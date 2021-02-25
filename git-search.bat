@@ -9,10 +9,6 @@ SET temp_out=%temp_out%temp.txt
 
 SET no_repo="fatal: not a git repository (or any of the parent directories): .git"
 SET no_repo=%no_repo:"=%
-SET no_commits[0]="On branch master"
-SET no_commits[1]="Your branch is up-to-date with 'origin/master'."
-SET no_commits[2]="nothing to commit, working directory clean"
-
 SET /A status=0
 SET /A count=-1
 SET repos[0]=""
@@ -43,18 +39,24 @@ FOR %%i in (%*) DO (
 			ECHO [91mFatal: git-search does not accept more than one path as arguments[0m
 			EXIT /B 0
 		) ELSE (
-			ECHO Starting search in "!arg!"
 			SET /A path_taken=1
 			CD "!arg!"
 		)
+	) ELSE IF "!arg!"=="--help" (
+	REM Display help message
+		CALL :ShowHelp
+		GOTO :eof
+	) ELSE IF "!arg!"=="-h" (
+	REM Display help message
+		CALL :ShowHelp
+		GOTO :eof
 	) ELSE (
 	REM Invalid argument
 		ECHO [91mWarning: unused argument "!arg!"[0m
 	)
 )
-IF %path_taken%==0 (
-	ECHO Starting search in "%CD%"
-)
+REM Show user execution info
+ECHO Starting search in "%CD%"
 IF %show_progress%==1 (
 	ECHO(
 )
@@ -86,6 +88,7 @@ IF %count%==-1 (
 REM Clear temp output file
 COPY NUL "%temp_out%" > NUL
 
+:end
 EXIT /B %ERRORLEVEL%
 
 
@@ -93,6 +96,10 @@ EXIT /B %ERRORLEVEL%
 
 REM Functions
 REM ====================================================================================================
+:ShowHelp
+	ECHO Help message in progress...
+EXIT /B 0
+
 :CheckDir
 	IF %show_progress%==1 (
 		ECHO     Searching "%~dpnx1"
