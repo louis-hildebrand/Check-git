@@ -26,18 +26,18 @@ FOR %%i in (%*) DO (
 	
 	IF "!arg!"=="-r" (
 	REM Recursive flag
-		ECHO Recursive mode enabled
+		IF %search_recursive%==1 ( ECHO [93mWarning: repeated flag -r[0m )
 		SET /A search_recursive=1
 	) ELSE IF "!arg!"=="-p" (
 	REM Progress flag
-		ECHO Progress will be shown
+		IF %show_progress%==1 ( ECHO [93mWarning: repeated flag -p[0m )
 		SET /A show_progress=1
 	) ELSE IF EXIST "!arg!\" (
 	REM If a path is given, start in that directory
 		IF !path_taken!==1 (
 			ECHO(
 			ECHO [91mFatal: git-search does not accept more than one path as arguments[0m
-			EXIT /B 0
+			GOTO :eof
 		) ELSE (
 			SET /A path_taken=1
 			CD "!arg!"
@@ -56,6 +56,8 @@ FOR %%i in (%*) DO (
 	)
 )
 REM Show user execution info
+IF %search_recursive%==1 	( ECHO Recursive mode enabled )
+IF %show_progress%==1		( ECHO Progress will be shown )
 ECHO Starting search in "%CD%"
 IF %show_progress%==1 (
 	ECHO(
