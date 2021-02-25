@@ -61,7 +61,6 @@ IF %show_progress%==1 (
 REM Iterate through directories and check git status and git fetch
 IF %show_progress%==1 ( ECHO Progress: )
 FOR /D %%i in (./*) DO (
-	IF %show_progress%==1 ( ECHO     Searching "%%i" )
 	CALL :CheckDir "%%i"
 )
 
@@ -76,7 +75,7 @@ IF %count%==-1 (
 	FOR /L %%i in (0, 1, %count%) DO (
 		ECHO     !repos[%%i]!
 		IF !has_commits[%%i]!==1 (
-			ECHO         [96mUnsaved changes[0m
+			ECHO         [96mUnsaved local changes[0m
 		)
 		IF !has_remote_changes[%%i]!==1 (
 			ECHO		[95mNew changes in the remote[0m
@@ -95,6 +94,9 @@ EXIT /B %ERRORLEVEL%
 REM Functions
 REM ====================================================================================================
 :CheckDir
+	IF %show_progress%==1 (
+		ECHO     Searching "%~dpnx1"
+	)
 	CD "%~dpnx1"
 	REM Get output from git status into output
 	CALL :RunGitStatus status
