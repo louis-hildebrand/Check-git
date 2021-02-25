@@ -99,7 +99,14 @@ EXIT /B %ERRORLEVEL%
 REM Functions
 REM ====================================================================================================
 :ShowHelp
-	ECHO Help message in progress...
+	ECHO Checks for local and remote updates in multiple git repositories
+	ECHO(
+	ECHO usage: git-search [^<path^>] [-r] [-p] [--help ^| -h]
+	ECHO     ^<path^>      The directory whose subdirectories are to be searched
+	ECHO     -r          Recursively check all subdirectories
+	ECHO     -p          Display progress
+	ECHO     --help, -h  Show help
+	ECHO(
 EXIT /B 0
 
 :CheckDir
