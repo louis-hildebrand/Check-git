@@ -76,7 +76,7 @@ IF %count%==-1 (
 	FOR /L %%i in (0, 1, %count%) DO (
 		ECHO     !repos[%%i]!
 		IF !has_commits[%%i]!==1 (
-			ECHO         [96mUnsaved commits[0m
+			ECHO         [96mUnsaved changes[0m
 		)
 		IF !has_remote_changes[%%i]!==1 (
 			ECHO		[95mNew changes in the remote[0m
