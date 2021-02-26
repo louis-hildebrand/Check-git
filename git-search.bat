@@ -58,10 +58,11 @@ FOR %%i in (%*) DO (
 REM Show user execution info
 IF %search_recursive%==1 	( ECHO Recursive mode enabled )
 IF %show_progress%==1		( ECHO Progress will be shown )
-ECHO Starting search in %CD%
+ECHO Starting search in "%CD%"
 IF %show_progress%==1 (
 	ECHO(
 )
+
 REM Iterate through directories and check git status and git fetch
 IF %show_progress%==1 ( ECHO Progress: )
 FOR /D %%i in (./*) DO (
@@ -110,11 +111,7 @@ REM ============================================================================
 EXIT /B 0
 
 :CheckDir
-	SET dir_name="%~dpnx1"
-	SET dir_name=%dir_name:"=%
-	IF %show_progress%==1 (
-		ECHO     Searching %dir_name%
-	)
+	IF %show_progress%==1 ( ECHO     Searching "%~dpnx1" )
 	CD "%~dpnx1"
 	REM Get output from git status into output
 	CALL :RunGitStatus status
@@ -128,7 +125,7 @@ EXIT /B 0
 	) ELSE (
 	REM Valid git repo
 		SET /A count+=1
-		SET repos[!count!]=%dir_name%
+		SET repos[!count!]="%~dpnx1"
 		IF %status%==2 (
 			SET /A has_commits[!count!]=1
 		) ELSE (
