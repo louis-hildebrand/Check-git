@@ -77,10 +77,12 @@ FOR /D %%i in (./*) DO (
 )
 
 REM Print report
-ECHO(
 IF %count%==-1 (
+	ECHO -
+	ECHO(
 	ECHO No git repositories found.
 ) ELSE (
+	ECHO(
 	SET /A count+=1
 	ECHO !count! git repos found:
 	SET /A count-=1
