@@ -100,7 +100,6 @@ IF %count%==-1 (
 REM Clear temp output file
 COPY NUL "%temp_out%" > NUL
 
-:end
 EXIT /B %ERRORLEVEL%
 
 
