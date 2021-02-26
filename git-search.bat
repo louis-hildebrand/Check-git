@@ -112,10 +112,10 @@ EXIT /B 0
 
 :CheckDir
 	IF %show_progress%==1 ( ECHO     Searching "%~dpnx1" )
+	SET dir_name="%~dpnx1"
 	CD "%~dpnx1"
-	REM Get output from git status into output
-	CALL :RunGitStatus status
-	IF %status%==0 (
+	REM Check whether the directory is a git repo
+	IF NOT EXIST "%dir_name:"=%\.git\" (
 	REM Not a git repo: iterate through subdirectories if recursive option is selected
 		IF %search_recursive%==1 (
 			FOR /D %%i in (./*) DO (
@@ -123,21 +123,32 @@ EXIT /B 0
 			)
 		)
 	) ELSE (
-	REM Valid git repo
-		SET /A count+=1
-		SET repos[!count!]="%~dpnx1"
-		IF %status%==2 (
-			SET /A has_commits[!count!]=1
-		) ELSE (
-			SET /A has_commits[!count!]=0
-		)
-		
-		REM Check for changes in the remote
-		CALL :RunGitFetch status
+		REM Get output from git status into output
+		CALL :RunGitStatus status
 		IF !status!==0 (
-			SET /A has_remote_changes[!count!]=0
+		REM Not a git repo: iterate through subdirectories if recursive option is selected
+			IF %search_recursive%==1 (
+				FOR /D %%i in (./*) DO (
+					CALL :CheckDir "%%i"
+				)
+			)
 		) ELSE (
-			SET /A has_remote_changes[!count!]=1
+		REM Valid git repo
+			SET /A count+=1
+			SET repos[!count!]=!dir_name!
+			IF !status!==2 (
+				SET /A has_commits[!count!]=1
+			) ELSE (
+				SET /A has_commits[!count!]=0
+			)
+			
+			REM Check for changes in the remote
+			CALL :RunGitFetch status
+			IF !status!==0 (
+				SET /A has_remote_changes[!count!]=0
+			) ELSE (
+				SET /A has_remote_changes[!count!]=1
+			)
 		)
 	)
 	CD ..
