@@ -24,35 +24,42 @@ FOR %%i in (%*) DO (
 	SET arg=%%i
 	SET arg=!arg:"=!
 	
-	IF "!arg!"=="-r" (
+	IF /I "!arg!"=="-r" (
 	REM Recursive flag
-		IF %search_recursive%==1 ( ECHO [93mWarning: repeated flag -r[0m )
+		IF !search_recursive!==1 (
+			ECHO [91mError: repeated flag -r[0m
+			GOTO :eof
+		)
 		SET /A search_recursive=1
-	) ELSE IF "!arg!"=="-p" (
+	) ELSE IF /I "!arg!"=="-p" (
 	REM Progress flag
-		IF %show_progress%==1 ( ECHO [93mWarning: repeated flag -p[0m )
+		IF !show_progress!==1 ( 
+			ECHO [91mError: repeated flag -p[0m
+			GOTO :eof
+		)
 		SET /A show_progress=1
 	) ELSE IF EXIST "!arg!\" (
 	REM If a path is given, start in that directory
 		IF !path_taken!==1 (
 			ECHO(
-			ECHO [91mFatal: git-search does not accept more than one path as arguments[0m
+			ECHO [91mError: git-search does not accept more than one path as arguments[0m
 			GOTO :eof
 		) ELSE (
 			SET /A path_taken=1
 			CD "!arg!"
 		)
-	) ELSE IF "!arg!"=="--help" (
+	) ELSE IF /I "!arg!"=="--help" (
 	REM Display help message
 		CALL :ShowHelp
 		GOTO :eof
-	) ELSE IF "!arg!"=="-h" (
+	) ELSE IF /I "!arg!"=="-h" (
 	REM Display help message
 		CALL :ShowHelp
 		GOTO :eof
 	) ELSE (
 	REM Invalid argument
-		ECHO [91mWarning: unused argument "!arg!"[0m
+		ECHO [91mError: unused argument "!arg!"[0m
+		GOTO :eof
 	)
 )
 REM Show user execution info
