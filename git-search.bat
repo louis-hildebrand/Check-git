@@ -1,7 +1,7 @@
 @ECHO off
 SETLOCAL EnableDelayedExpansion
 REM ====================================================================================================
-REM This script checks for updates in all git repositories, starting in the current directory.
+REM This script checks for updates in multiple git repositories.
 REM ====================================================================================================
 
 SET temp_out=%~dp0
@@ -97,6 +97,7 @@ EXIT /B %ERRORLEVEL%
 
 
 
+REM ====================================================================================================
 REM Functions
 REM ====================================================================================================
 :ShowHelp
